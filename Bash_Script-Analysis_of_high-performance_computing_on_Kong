@@ -1,0 +1,36 @@
+#!/bin/bash
+read -p "Starting number of cores: "  current_number
+read -p "Final number of cores: "  final_number
+current_number2=$current_number
+file="log.lammps"
+while [ $current_number -le $final_number ]
+do
+  if [ -d "/home/j/jnt24/Yoshiki/core_$current_number" ] 
+  then
+    rm -r core_$current_number
+  fi
+  mkdir core_$current_number
+  cp data.Pt111_1CF ffield.reax in.FG_Pt_Rlx submit.lammps.sh.txt core_$current_number
+  cd core_$current_number
+  if [ ! -f "$file" ];
+  then
+    qsub submit.lammps.sh.txt
+  fi
+  cd ..
+  current_number=$(( current_number+1 ))
+done
+
+touch data.txt
+>data.txt
+
+while [ $current_number2 -le $final_number ]
+do
+  cd core_$current_number2
+  t=$(awk '/time:/{print $NF}' log.lammps)
+  seconds=$(echo $t | awk -F: '{ print ($1 * 3600) + ($2 * 60) + $3 }')
+  cd ..
+  echo "$current_number2	$seconds" >> data.txt
+  current_number2=$(( current_number2+1 ))
+done
+
+gnuplot -e 'plot "data.txt" u 1:2; pause -1'
