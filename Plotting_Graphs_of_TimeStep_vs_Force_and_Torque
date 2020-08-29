@@ -1,0 +1,37 @@
+prompt = 'What file would you like to graph? ';
+x = input(prompt, 's');
+filename = strcat("C:\Users\yoshi\Desktop\force_data\", x, "\force.txt");
+% change file path as necessary
+data = dlmread(filename,' ',2,0);
+
+%columns: TimeStep, v_xforce, v_yforce, v_zforce, v_xtorque, v_ytorque, v_ztorque
+TimeStep = data(1:end, 1);
+v_xforce = data(1:end, 2).*1.60217733;
+v_yforce = data(1:end, 3).*1.60217733;
+v_zforce = data(1:end, 4).*1.60217733;
+v_xtorque = data(1:end, 5).*1.60217733-19;
+v_ytorque = data(1:end, 6).*1.60217733-19;
+v_ztorque = data(1:end, 7).*1.60217733-19;
+x_limit = max(TimeStep);
+
+figure(1);
+plot(TimeStep, v_xforce, 'r', TimeStep, v_yforce, 'b', TimeStep, v_zforce, 'g');
+title('Time vs Force in x-, y-, z-axes');
+xlabel('Time [fs]');
+ylabel('Force [nN]');
+legend('x Force','y Force','z Force');
+xlim([0 x_limit]);
+grid on;
+set(gca,'FontWeight','bold','FontSize',18,"GridAlpha",0.5);
+
+figure(2);
+plot(TimeStep, v_xtorque, 'r', TimeStep, v_ytorque, 'b', TimeStep, v_ztorque, 'g');
+title('Time vs Torque in x-, y-, z-axes');
+xlabel('Time [fs]');
+ylabel('Torque [N-m]');
+legend('x Torque','y Torque','z Torque');
+xlim([0 x_limit]);
+grid on;
+set(gca,'FontWeight','bold','FontSize',18,"GridAlpha",0.5);
+
+clear all;
