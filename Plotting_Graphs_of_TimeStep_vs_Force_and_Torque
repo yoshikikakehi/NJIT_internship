@@ -1,6 +1,8 @@
-prompt = 'What file would you like to graph? ';
+prompt = 'What file would you like to graph? Enter file name (with file extension): ';
+prompt2 = 'What is the path of that file?';
 x = input(prompt, 's');
-filename = strcat("C:\Users\yoshi\Desktop\NJIT_Provost\force_data\", x, "\force.txt");
+path_to_file = input(prompt2, 's');
+filename = strcat(path_to_file, x);
 % change file path as necessary
 data = dlmread(filename,' ',2,0);
 
